@@ -25,13 +25,13 @@ public:
 
 void Graph::loadGraph(const char* szFileName,const char* scFileName,double inf, double outf){ 
 	GraphLoader	rawGraph(szFileName); //创建一个GraphLoader类的实例，并调用一个参数的构造方法来初始化该实例
-	LoadGraphFromRawGraph(rawGraph);
-	GetSeeds();	   
-	GetFirstExtension(inf);	
-	GetSecondExtension(outf);
-	sort(m_ComplexArray.begin(),m_ComplexArray.end(),CompCliqueSizeDcend());
-	FilterClique();
-	outPutComplex(scFileName);
+	LoadGraphFromRawGraph(rawGraph);//将上一步骤得到的数据结构转化成vector链表
+	GetSeeds();//得到种子节点
+	GetFirstExtension(inf);//第一次扩展
+	GetSecondExtension(outf);//第二次扩展
+	sort(m_ComplexArray.begin(),m_ComplexArray.end(),CompCliqueSizeDcend());//排序
+	FilterClique();//筛选
+	outPutComplex(scFileName);//输出
 }
 
 //根据初始保存的原始图信息来获取图结构。总的来说是根据边逐渐构建图;
@@ -76,9 +76,9 @@ void Graph::LoadGraphFromRawGraph(GraphLoader rawGraph)
 		}
 
 		m_NodeArray[j]->InsertArc(rawGraph.m_RawGraph[i].m_szTo,k,rawGraph.m_RawGraph[i].m_fWeight); //在链表中添加一条边;
-		m_NodeArray[j]->m_iDegree++;
+		m_NodeArray[j]->m_iDegree++;//节点的度增加1
 		m_NodeArray[k]->InsertArc(rawGraph.m_RawGraph[i].m_szFrom,j,rawGraph.m_RawGraph[i].m_fWeight);   //在链表中添加一条边;
-		m_NodeArray[k]->m_iDegree++;		   		
+		m_NodeArray[k]->m_iDegree++;//节点的度增加1
 	}
 
 	m_nNumEdges=rawGraph.m_nArcs;//关系的个数等价于边的个数;
@@ -101,20 +101,20 @@ void Graph::GetSeeds()
 			pArc = pArc->m_pNextArc;
 		}		
 	}
-	Ave_Degree = Ave_Degree/m_NodeArray.size();
-	Ave_AF = Ave_AF/(m_NodeArray.size());
+	Ave_Degree = Ave_Degree/m_NodeArray.size();//平均度
+	Ave_AF = Ave_AF/(m_NodeArray.size());//平均权重
 
 
 	int iHubs=0;
 	for (int i = 0; i < m_NodeArray.size(); i++)
-	{	
+	{
 		double TempAF = 0.0;
 		Arc* pArc = m_NodeArray[i]->m_pFirst;
 		while(pArc!=NULL){
 			TempAF += pArc->m_fWeight;
 			pArc = pArc->m_pNextArc;
 		}	
-		if (m_NodeArray[i]->m_iDegree >= Ave_Degree  || TempAF >= Ave_AF)
+		if (m_NodeArray[i]->m_iDegree >= Ave_Degree  || TempAF >= Ave_AF)//度大于平均度或者 权值大于平均权值
 		{
 			Clique pClique(iHubs);
 			++iHubs;
@@ -125,7 +125,7 @@ void Graph::GetSeeds()
 }
 
 //此函数是得到的种子进行第一次扩展，即内核扩展;
-void Graph::GetFirstExtension(double inf)
+void Graph::GetFirstExtension(double inf)//inf平均权值最大限度
 {
 
 	for (int i = 0;i<m_ComplexArray.size();i++)
@@ -173,7 +173,7 @@ void Graph::GetSecondExtension( double outf)
 				if (!IsIncludedInClique(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]) && result == FromNodes.end())
 				{
 					double getAdjEdgesWeight = getAdjEdges(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]);
-					if ((getAdjEdgesWeight/m_ComplexArray[i].m_CliqueNodes.size()) > (outf))
+					if ((getAdjEdgesWeight/m_ComplexArray[i].m_CliqueNodes.size()) > (outf))//满足要求则添加
 					{
 						FromNodes.push_back( m_NodeArray[pArc->m_iNodeTo]);
 					}
@@ -195,7 +195,7 @@ void  Graph::FilterClique()
 	int findNum;
 	int mi;
 	int mj;
-	double overlap;
+	double overlap = 0.0;
 	std::vector<Node*>::iterator iter;
 	for (int i=0;i<m_ComplexArray.size();i++){
 		m_ComplexArray[i].mark=true;
@@ -220,9 +220,9 @@ void  Graph::FilterClique()
 			}
 			if ((mi!=0) && (mj!=0))
 			{
-				overlap = (double) (findNum*findNum)/(mi*mj);
+				overlap = (double) (findNum*findNum)/(mi*mj);//计算overlap值
 			}
-			if (findNum == mj||(overlap-tvOverlap>0)){
+			if (findNum == mj||(overlap-tvOverlap>0)){//完全包含或者与已经define的tvOverlap相比较满足
 				m_ComplexArray[j].mark=false;
 			}
 		}

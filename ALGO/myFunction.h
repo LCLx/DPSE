@@ -88,7 +88,7 @@ int FindMinVectorWeigthNode(Clique clique)
 	return vectormarknode;
 }
 
-double getAdjEdges(Node* mNode,Clique mClique)//获取mNode与团mClique 之间的权重和;
+double getAdjEdges(Node* mNode,Clique mClique)//获取mNode与团mClique之间的权重和;
 {
 	Arc* pArc = mNode->m_pFirst;
 	double weightAdjEdge = 0.0;

@@ -1,4 +1,3 @@
-
 class Arc
 {
 public:
@@ -13,10 +12,10 @@ public:
     }
     Arc(string iNodeToName,int iNodeTo, double fWeight, Arc* pNextArc)
     {
-        m_iNodeToName=iNodeToName;
-        m_iNodeTo = iNodeTo;
-        m_fWeight = fWeight;
-        m_pNextArc = pNextArc;
+        m_iNodeToName=iNodeToName;//指向节点的名称
+        m_iNodeTo = iNodeTo;//指向节点的ID
+        m_fWeight = fWeight;//权重
+        m_pNextArc = pNextArc;//下一条边，这里使用的数据结构为链表
     }
 };
 
@@ -33,14 +32,16 @@ public:
     
 public:
     Node()
-    {	AF=0;
+    {
+        AF=0;
         m_iNode=0;
         m_pFirst=0;
         m_iDegree=0;
         m_szName[0]='\0';
     }
     Node(int iNode,string szName)
-    {   AF=0;
+    {
+        AF=0;
         m_szName=szName;
         m_iNode=iNode;
         m_pFirst=0;
@@ -49,7 +50,8 @@ public:
         m_iComplex=0;
     }
     Node(string szName)
-    {  AF=0;
+    {
+        AF=0;
         m_szName=szName;
         
     }
@@ -69,7 +71,7 @@ class Clique//团类;
 {
 public:
     std::vector<Node*>	m_CliqueNodes;//团的节点向量;
-    bool  mark ;
+    bool mark ;
     int m_CliqueNodesID;  //团编号
     int NodeNum;
     double os;
@@ -84,12 +86,12 @@ public:
     }
 };
 
-class GraphArc
+class GraphArc //这里表示图的边的类
 {
 public:
-    string m_szFrom;//
-    string m_szTo;//
-    double m_fWeight;//
+    string m_szFrom;//出发点
+    string m_szTo;//达到点
+    double m_fWeight;//权值
     bool arcMark;
 public:
     GraphArc()
@@ -131,7 +133,7 @@ public:
             return;
         }
         GraphArc arc;
-        int i=0;
+        //int i=0;
         while(!InFile.eof())  {
             InFile>>arc.m_szFrom>>arc.m_szTo>>arc.m_fWeight;
             m_RawGraph.push_back(arc); //在后面插入
