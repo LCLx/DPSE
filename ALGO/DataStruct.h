@@ -12,22 +12,22 @@ public:
     }
     Arc(string iNodeToName,int iNodeTo, double fWeight, Arc* pNextArc)
     {
-        m_iNodeToName=iNodeToName;//指向节点的名称
-        m_iNodeTo = iNodeTo;//指向节点的ID
-        m_fWeight = fWeight;//权重
-        m_pNextArc = pNextArc;//下一条边，这里使用的数据结构为链表
+        m_iNodeToName=iNodeToName;  //指向节点的名称
+        m_iNodeTo = iNodeTo;        //指向节点的ID
+        m_fWeight = fWeight;        //权重
+        m_pNextArc = pNextArc;      //下一条边，这里使用的数据结构为链表
     }
 };
 
 class Node
 {
 public:
-    bool	m_bMarked;//节点标志;
-    int		m_iNode;//节点编号;
-    string	m_szName;//节点名称;
-    int		m_iDegree;//节点度;
-    Arc*	m_pFirst;//与节点相连的第一条边;
-    int		m_iComplex;//当前所属Complex;
+    bool	m_bMarked;      //节点标志;
+    int		m_iNode;        //节点编号;
+    string	m_szName;       //节点名称;
+    int		m_iDegree;      //节点度;
+    Arc*	m_pFirst;       //与节点相连的第一条边;
+    int		m_iComplex;     //当前所属Complex;
     double AF;
     
 public:
@@ -70,9 +70,9 @@ public:
 class Clique//团类;
 {
 public:
-    std::vector<Node*>	m_CliqueNodes;//团的节点向量;
+    std::vector<Node*>	m_CliqueNodes;  //团的节点向量;
     bool mark ;
-    int m_CliqueNodesID;  //团编号
+    int m_CliqueNodesID;                //团编号
     int NodeNum;
     double os;
 public:
@@ -86,12 +86,12 @@ public:
     }
 };
 
-class GraphArc //这里表示图的边的类
+class GraphArc      //这里表示图的边的类
 {
 public:
-    string m_szFrom;//出发点
-    string m_szTo;//达到点
-    double m_fWeight;//权值
+    string m_szFrom;    //出发点
+    string m_szTo;      //达到点
+    double m_fWeight;   //权值
     bool arcMark;
 public:
     GraphArc()
@@ -111,8 +111,8 @@ public:
 class GraphLoader
 {
 public:
-    std::vector<GraphArc>  m_RawGraph;//初始的边的数据保存在这里;
-    int m_nArcs;//边的个数，即蛋白质之间有多少条关系;
+    std::vector<GraphArc>  m_RawGraph;  //初始的边的数据保存在这里;
+    int m_nArcs;                        //边的个数，即蛋白质之间有多少条关系;
     
 public:
     GraphLoader()
@@ -136,7 +136,7 @@ public:
         //int i=0;
         while(!InFile.eof())  {
             InFile>>arc.m_szFrom>>arc.m_szTo>>arc.m_fWeight;
-            m_RawGraph.push_back(arc); //在后面插入
+            m_RawGraph.push_back(arc);  //在后面插入
         }
         m_nArcs = (int)m_RawGraph.size();
         

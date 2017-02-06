@@ -1,4 +1,3 @@
-
 bool IsIncludedInClique(Node* node, Clique clique)//判断一个节点是否属于一个团，属于时返回true，不属于时返回false;
 {
 	bool Ismark = false;
