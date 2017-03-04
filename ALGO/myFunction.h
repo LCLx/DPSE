@@ -56,7 +56,7 @@ int GetCliqueEdges(Clique clique)//获取一个团内的总的边数;
 	return (EdgesInClique/2);
 }
 
-int FindMinVectorWeigthNode(Clique clique)
+int FindMinVectorWeightNode(Clique clique)
 {	//找到一个团内节点权重最小的那个，返回向量容器中的节点序号;
 	double min = 100;
 	int marknode = 0;
@@ -87,24 +87,22 @@ int FindMinVectorWeigthNode(Clique clique)
 	return vectormarknode;
 }
 
-double getAdjEdges(Node* mNode,Clique mClique)//获取mNode与团mClique之间的权重和;
+double getAdjEdges(Node* mNode,Clique mClique)//获取mNode与团mClique之间的权重和
 {
 	Arc* pArc = mNode->m_pFirst;
 	double weightAdjEdge = 0.0;
-
 	while (pArc!=NULL)
 	{
 		for (int i=0;i<mClique.m_CliqueNodes.size();i++)
 		{
-			if(pArc->m_iNodeTo == mClique.m_CliqueNodes[i]->m_iNode)
+			if(pArc->m_iNodeTo == mClique.m_CliqueNodes[i]->m_iNode)//若该边连向的是同一个节点
 			{
-				weightAdjEdge += pArc->m_fWeight;
+				weightAdjEdge += pArc->m_fWeight;//所有与mClique之中的点有共同重点的边的权值之和；例如A in mNode->B; C in mClique ->B;weightAdjEdge += A in mNode;
 			}
 		}
 		pArc = pArc->m_pNextArc;
 	}
 	return weightAdjEdge;
-
 }
 
 

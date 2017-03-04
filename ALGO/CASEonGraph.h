@@ -28,6 +28,7 @@ void Graph::loadGraph(const char* szFileName,const char* scFileName,double inf, 
 	GetSeeds();                         //得到种子节点
 	GetFirstExtension(inf);             //第一次扩展
 	GetSecondExtension(outf);           //第二次扩展
+    //GetSecondExtension(0.95);
 	sort(m_ComplexArray.begin(),m_ComplexArray.end(),CompCliqueSizeDcend());//排序
 	FilterClique();                     //筛选
 	outPutComplex(scFileName);          //输出
@@ -96,7 +97,7 @@ void Graph::GetSeeds()
 		Ave_Degree += m_NodeArray[i]->m_iDegree;
 		Arc* pArc = m_NodeArray[i]->m_pFirst;
 		while(pArc!=NULL){
-			Ave_AF += pArc->m_fWeight;
+			Ave_AF += pArc->m_fWeight;//权重等于所有与之直接关联的边的权重之和
 			pArc = pArc->m_pNextArc;
 		}		
 	}
@@ -110,7 +111,7 @@ void Graph::GetSeeds()
 		double TempAF = 0.0;
 		Arc* pArc = m_NodeArray[i]->m_pFirst;
 		while(pArc!=NULL){
-			TempAF += pArc->m_fWeight;
+			TempAF += pArc->m_fWeight;//计算当前节点的权重AF
 			pArc = pArc->m_pNextArc;
 		}	
 		if (m_NodeArray[i]->m_iDegree >= Ave_Degree  || TempAF >= Ave_AF)//度大于平均度或者 权值大于平均权值
@@ -118,63 +119,63 @@ void Graph::GetSeeds()
 			Clique pClique(iHubs);
 			++iHubs;
 			pClique.m_CliqueNodes.push_back(m_NodeArray[i]);
-			m_ComplexArray.push_back(pClique);
+			m_ComplexArray.push_back(pClique);//团的集合
 		}	
 	}
 }
 
 //此函数是得到的种子进行第一次扩展，即内核扩展;
+//此函数是将所得到的种子周围的所有节点全部加入该团，如果该团的平均密度小于阈值inf，则需要进行删除。删除过程首先得到的是节点密度最小的节点，然后将该节点从该团中删除。
 void Graph::GetFirstExtension(double inf)   //inf平均权值最大限度
 {
 
 	for (int i = 0;i<m_ComplexArray.size();i++)
 	{
 		Arc* pArc = m_ComplexArray[i].m_CliqueNodes[0]->m_pFirst;   //因为初始团里面只有一个节点，所以可以定位到下坐标0;
-		while(pArc!=NULL){
-			m_ComplexArray[i].m_CliqueNodes.push_back(m_NodeArray[pArc->m_iNodeTo]);
-			pArc = pArc->m_pNextArc;		
+		while(pArc!=NULL)
+        {
+			m_ComplexArray[i].m_CliqueNodes.push_back(m_NodeArray[pArc->m_iNodeTo]); //所有直接关联的节点都被放入该集合
+			pArc = pArc->m_pNextArc;
 		}
 	}
 
 	for (int i=0;i<m_ComplexArray.size();i++)
 	{
 		double TotalWeight = getNodesetWeights(m_ComplexArray[i]);
-		double AveWeight = 2*TotalWeight/(m_ComplexArray[i].m_CliqueNodes.size()*(m_ComplexArray[i].m_CliqueNodes.size()-1));
+		double AveWeight = 2*TotalWeight/(m_ComplexArray[i].m_CliqueNodes.size()*(m_ComplexArray[i].m_CliqueNodes.size()-1));//这里算出来的是图的密度
 		while (AveWeight < inf && m_ComplexArray[i].m_CliqueNodes.size()>2)
 		{
-			int m = FindMinVectorWeigthNode(m_ComplexArray[i]);     //节点权重最小（AF）
-
+			int m = FindMinVectorWeightNode(m_ComplexArray[i]);     //节点权重最小（AF）
 			std::vector<Node*>::iterator begin = m_ComplexArray[i].m_CliqueNodes.begin();
 			std::vector<Node*>::iterator end = m_ComplexArray[i].m_CliqueNodes.end();
-			m_ComplexArray[i].m_CliqueNodes.erase(find(begin,end,m_ComplexArray[i].m_CliqueNodes[m]));
-
-			TotalWeight = getNodesetWeights(m_ComplexArray[i]);
+			m_ComplexArray[i].m_CliqueNodes.erase(find(begin,end,m_ComplexArray[i].m_CliqueNodes[m]));//删除该节点权重最小的节点
+			TotalWeight = getNodesetWeights(m_ComplexArray[i]);//重新计算密度
 			AveWeight = 2*TotalWeight/(m_ComplexArray[i].m_CliqueNodes.size()*(m_ComplexArray[i].m_CliqueNodes.size()-1));
 		}
 	}
 }
 
 //此函数是得到的种子进行第二次扩展，即外核扩展;
-void Graph::GetSecondExtension( double outf)
+void Graph::GetSecondExtension(double outf)
 {
 	for (int i=0;i<m_ComplexArray.size();i++)
 	{
 		std::vector<Node*> FromNodes;//已经找到的要扩展到团的节点，避免重复
 		for (int j = 0; j<m_ComplexArray[i].m_CliqueNodes.size(); j++)
 		{
-			Arc* pArc = m_ComplexArray[i].m_CliqueNodes[j]->m_pFirst;
+			Arc* pArc = m_ComplexArray[i].m_CliqueNodes[j]->m_pFirst;//i团的j节点的所有边
 			while(pArc!=NULL)
 			{
 				std::vector<Node*>::iterator begin = FromNodes.begin();
 				std::vector<Node*>::iterator end = FromNodes.end();
 				std::vector<Node*>::iterator result = find(begin,end,m_NodeArray[pArc->m_iNodeTo]);
 
-				if (!IsIncludedInClique(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]) && result == FromNodes.end())
+				if (!IsIncludedInClique(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]) && result == FromNodes.end())//该节点不在m_ComplexArray[i]中，并且不属于已经找到的要扩展到团的节点。
 				{
-					double getAdjEdgesWeight = getAdjEdges(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]);
+					double getAdjEdgesWeight = getAdjEdges(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]);//计算一个系数 详情看函数
 					if ((getAdjEdgesWeight/m_ComplexArray[i].m_CliqueNodes.size()) > (outf))//满足要求则添加
 					{
-						FromNodes.push_back( m_NodeArray[pArc->m_iNodeTo]);
+						FromNodes.push_back(m_NodeArray[pArc->m_iNodeTo]);
 					}
 					//break;
 				}

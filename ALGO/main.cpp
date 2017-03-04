@@ -32,7 +32,7 @@ int main(int args,char **argv)
 {
     double inf;
     double outf;
-    char wpin[100]="/Users/LCL/Documents/WPIN1.txt";	//静态
+    char wpin[100]="/Users/LCL/Documents/WPIN.txt";	//静态
     
     for (inf = 0.40;inf <=0.40;inf+=0.1)
     {
@@ -44,11 +44,9 @@ int main(int args,char **argv)
             strcat(str,s);
             strcat(str,"_OUT_");
             gcvt(outf,2,s);                             //把double型的outf保留2位转换为字符串给s
-
             strcat(str,s);
             cout<<str<<endl;
             strcat(str,".txt");                         //str是生成的文件名
-            
             char  SCComplexesfilename[100] ;
             strcpy(SCComplexesfilename,wpin);           //把wpin的地址带入SCComplexesfilename
             SCComplexesfilename[strlen(SCComplexesfilename)-4] = '\0';
