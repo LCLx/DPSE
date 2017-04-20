@@ -247,12 +247,11 @@ void  Graph::outPutComplex(const char* scFileName)
 
 	for (int i=0;i<m_ComplexArray.size();i++)
 	{  
-		if(m_ComplexArray[i].mark==true)
+		if(m_ComplexArray[i].mark==true&&m_ComplexArray[i].m_CliqueNodes.size()>=3)
         {
 			for (int j=0;j<m_ComplexArray[i].m_CliqueNodes.size();j++)
 			{ 
 				OutFile<<m_ComplexArray[i].m_CliqueNodes[j]->m_szName<<'\t';
-
 			}
 			OutFile<<std::endl;
 		}
