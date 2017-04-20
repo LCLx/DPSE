@@ -1,10 +1,10 @@
 class Graph          //用邻接列表表示的图结构;
 {
 public:
-	std::vector<Node*>	 m_NodeArray;             //节点数组;
+	std::vector<Node*>	 m_NodeArray;           //节点向量;
 	int					 m_nNumEdges;
-	std::vector<Clique> m_ComplexArray;	//候选的种子集合;
-	std::vector<Clique> m_allComplexArray;	//12个时间点全部的
+	std::vector<Clique> m_ComplexArray;         //候选的种子集合;
+	std::vector<Clique> m_allComplexArray;      //12个时间点全部的
 public:
 	Graph(){	
 	}
@@ -97,7 +97,7 @@ void Graph::GetSeeds()
 		Ave_Degree += m_NodeArray[i]->m_iDegree;
 		Arc* pArc = m_NodeArray[i]->m_pFirst;
 		while(pArc!=NULL){
-			Ave_AF += pArc->m_fWeight;//权重等于所有与之直接关联的边的权重之和
+			Ave_AF += pArc->m_fWeight;          //权重等于所有与之直接关联的边的权重之和
 			pArc = pArc->m_pNextArc;
 		}		
 	}
@@ -114,7 +114,7 @@ void Graph::GetSeeds()
 			TempAF += pArc->m_fWeight;//计算当前节点的权重AF
 			pArc = pArc->m_pNextArc;
 		}	
-		if (m_NodeArray[i]->m_iDegree >= Ave_Degree  || TempAF >= Ave_AF)//度大于平均度或者 权值大于平均权值
+		if (m_NodeArray[i]->m_iDegree >= Ave_Degree  || TempAF >= Ave_AF)   //度大于平均度 或者 权值大于平均权值
 		{
 			Clique pClique(iHubs);
 			++iHubs;
@@ -142,14 +142,14 @@ void Graph::GetFirstExtension(double inf)   //inf平均权值最大限度
 	for (int i=0;i<m_ComplexArray.size();i++)
 	{
 		double TotalWeight = getNodesetWeights(m_ComplexArray[i]);
-		double AveWeight = 2*TotalWeight/(m_ComplexArray[i].m_CliqueNodes.size()*(m_ComplexArray[i].m_CliqueNodes.size()-1));//这里算出来的是图的密度
+		double AveWeight = 2*TotalWeight/(m_ComplexArray[i].m_CliqueNodes.size()*(m_ComplexArray[i].m_CliqueNodes.size()-1));                               //这里算出来的是图的密度
 		while (AveWeight < inf && m_ComplexArray[i].m_CliqueNodes.size()>2)
 		{
 			int m = FindMinVectorWeightNode(m_ComplexArray[i]);     //节点权重最小（AF）
 			std::vector<Node*>::iterator begin = m_ComplexArray[i].m_CliqueNodes.begin();
 			std::vector<Node*>::iterator end = m_ComplexArray[i].m_CliqueNodes.end();
 			m_ComplexArray[i].m_CliqueNodes.erase(find(begin,end,m_ComplexArray[i].m_CliqueNodes[m]));//删除该节点权重最小的节点
-			TotalWeight = getNodesetWeights(m_ComplexArray[i]);//重新计算密度
+			TotalWeight = getNodesetWeights(m_ComplexArray[i]);     //重新计算密度
 			AveWeight = 2*TotalWeight/(m_ComplexArray[i].m_CliqueNodes.size()*(m_ComplexArray[i].m_CliqueNodes.size()-1));
 		}
 	}
@@ -160,10 +160,10 @@ void Graph::GetSecondExtension(double outf)
 {
 	for (int i=0;i<m_ComplexArray.size();i++)
 	{
-		std::vector<Node*> FromNodes;//已经找到的要扩展到团的节点，避免重复
+		std::vector<Node*> FromNodes;                                       //已经找到的要扩展到团的节点，避免重复
 		for (int j = 0; j<m_ComplexArray[i].m_CliqueNodes.size(); j++)
 		{
-			Arc* pArc = m_ComplexArray[i].m_CliqueNodes[j]->m_pFirst;//i团的j节点的所有边
+			Arc* pArc = m_ComplexArray[i].m_CliqueNodes[j]->m_pFirst;       //i团的j节点的所有边
 			while(pArc!=NULL)
 			{
 				std::vector<Node*>::iterator begin = FromNodes.begin();
@@ -172,8 +172,8 @@ void Graph::GetSecondExtension(double outf)
 
 				if (!IsIncludedInClique(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]) && result == FromNodes.end())//该节点不在m_ComplexArray[i]中，并且不属于已经找到的要扩展到团的节点。
 				{
-					double getAdjEdgesWeight = getAdjEdges(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]);//计算一个系数 详情看函数
-					if ((getAdjEdgesWeight/m_ComplexArray[i].m_CliqueNodes.size()) > (outf))//满足要求则添加
+					double getPHWeight = getPH(m_NodeArray[pArc->m_iNodeTo], m_ComplexArray[i]);    //计算一个系数 详情看函数
+					if (getPHWeight > (outf))                    //满足要求则添加
 					{
 						FromNodes.push_back(m_NodeArray[pArc->m_iNodeTo]);
 					}
@@ -197,12 +197,15 @@ void  Graph::FilterClique()
 	int mj;
 	double overlap = 0.0;
 	std::vector<Node*>::iterator iter;
-	for (int i=0;i<m_ComplexArray.size();i++){
+	for (int i=0;i<m_ComplexArray.size();i++)
+    {
 		m_ComplexArray[i].mark=true;
 	}
-	for(int i=0;i<m_ComplexArray.size()-1;i++){
+	for(int i=0;i<m_ComplexArray.size()-1;i++)
+    {
 		if(m_ComplexArray[i].mark==false)continue;
-		for(int j=i+1;j<m_ComplexArray.size();j++){
+		for(int j=i+1;j<m_ComplexArray.size();j++)
+        {
 			if(m_ComplexArray[j].mark==false)continue;
 			findNum=0;
 			mi=m_ComplexArray[i].m_CliqueNodes.size();
@@ -222,7 +225,8 @@ void  Graph::FilterClique()
 			{
 				overlap = (double) (findNum*findNum)/(mi*mj);//计算overlap值
 			}
-			if (findNum == mj||(overlap-tvOverlap>0)){//完全包含或者与已经define的tvOverlap相比较满足
+			if (findNum == mj||(overlap-tvOverlap>0))//完全包含或者与已经define的tvOverlap相比较满足
+            {
 				m_ComplexArray[j].mark=false;
 			}
 		}
@@ -243,7 +247,8 @@ void  Graph::outPutComplex(const char* scFileName)
 
 	for (int i=0;i<m_ComplexArray.size();i++)
 	{  
-		if(m_ComplexArray[i].mark==true){
+		if(m_ComplexArray[i].mark==true)
+        {
 			for (int j=0;j<m_ComplexArray[i].m_CliqueNodes.size();j++)
 			{ 
 				OutFile<<m_ComplexArray[i].m_CliqueNodes[j]->m_szName<<'\t';

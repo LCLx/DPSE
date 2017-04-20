@@ -105,4 +105,26 @@ double getAdjEdges(Node* mNode,Clique mClique)//获取mNode与团mClique之间�
 	return weightAdjEdge;
 }
 
-
+double getPH(Node *mNode,Clique mClique)
+{
+    Arc* pArc = mNode->m_pFirst;
+    double PH = 0.0;
+    while (pArc!=NULL)
+    {
+        for (int i=0;i<mClique.m_CliqueNodes.size();i++)
+        {
+            if(pArc->m_iNodeTo == mClique.m_CliqueNodes[i]->m_iNode)//若该边连向的是同一个节点
+            {
+                PH += getAdjEdges(mClique.m_CliqueNodes[i], mClique)*pArc->m_fWeight;
+            }
+            else
+            {
+                PH+=getAdjEdges(mClique.m_CliqueNodes[i], mClique)*getAdjEdges(mNode, mClique)/(mClique.m_CliqueNodes.size()*4);
+            }
+        }
+        PH = PH/(mClique.m_CliqueNodes.size()*(mClique.m_CliqueNodes.size()-1));
+        pArc = pArc->m_pNextArc;
+        //cout<<PH<<endl;
+    }
+    return PH;
+}

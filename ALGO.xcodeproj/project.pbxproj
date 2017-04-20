@@ -25,7 +25,7 @@
 /* Begin PBXFileReference section */
 		676A0DB51E36F37D002FEFC9 /* ALGO */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ALGO; sourceTree = BUILT_PRODUCTS_DIR; };
 		676A0DB81E36F37D002FEFC9 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		676A0DBF1E36F463002FEFC9 /* CASEonGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CASEonGraph.h; sourceTree = "<group>"; };
+		676A0DBF1E36F463002FEFC9 /* ALGOonGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALGOonGraph.h; sourceTree = "<group>"; };
 		676A0DC01E36F463002FEFC9 /* DataStruct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataStruct.h; sourceTree = "<group>"; };
 		676A0DC11E36F463002FEFC9 /* myFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myFunction.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,7 +60,7 @@
 		676A0DB71E36F37D002FEFC9 /* ALGO */ = {
 			isa = PBXGroup;
 			children = (
-				676A0DBF1E36F463002FEFC9 /* CASEonGraph.h */,
+				676A0DBF1E36F463002FEFC9 /* ALGOonGraph.h */,
 				676A0DC01E36F463002FEFC9 /* DataStruct.h */,
 				676A0DC11E36F463002FEFC9 /* myFunction.h */,
 				676A0DB81E36F37D002FEFC9 /* main.cpp */,

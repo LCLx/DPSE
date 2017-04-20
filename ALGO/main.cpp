@@ -23,7 +23,7 @@ using namespace std;
 
 #include "DataStruct.h"
 #include "myFunction.h"
-#include "CASEonGraph.h"
+#include "ALGOonGraph.h"
 #include <string>
 #include <string.h>
 #include <time.h>
@@ -32,11 +32,12 @@ int main(int args,char **argv)
 {
     double inf;
     double outf;
-    char wpin[100]="/Users/LCL/Documents/WPIN.txt";	//静态
     
-    for (inf = 0.40;inf <=0.40;inf+=0.1)
+    char wpin[100]="/Users/LCL/Documents/Data/14.txt";	//静态
+    
+    for (inf = 0.3;inf <=0.50;inf+=0.05)
     {
-        for (outf =0.80;outf <= 0.80;outf+=0.2)
+        for (outf =0.06;outf <= 0.09;outf+=0.01)
         {
             char str[50] = "_Complexes_IN_";
             char s[4];
